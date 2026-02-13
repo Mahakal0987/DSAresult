@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Codeforces Progress</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Codeforces Weekly Progress</h1>
+    <canvas id="myChart"></canvas>
+
+    <script>
+        const handle = "Mannu_1155";
+
+        fetch(`https://codeforces.com/api/user.status?handle=${handle}`)
+        .then(res => res.json())
+        .then(data => {
+            const submissions = data.result;
+            const weekly = {};
+
+            submissions.forEach(sub => {
+                if (sub.verdict === "OK") {
+                    const date = new Date(sub.creationTimeSeconds * 1000);
+                    const week = getWeek(date);
+                    weekly[week] = (weekly[week] || 0) + 1;
+                }
+            });
+
+            const labels = Object.keys(weekly);
+            const values = Object.values(weekly);
+
+            new Chart(document.getElementById("myChart"), {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Accepted per Week",
+                        data: values
+                    }]
+                }
+            });
+        });
+
+        function getWeek(date) {
+            const firstJan = new Date(date.getFullYear(), 0, 1);
+            const days = Math.floor((date - firstJan) / (24 * 60 * 60 * 1000));
+            return "Week " + Math.ceil(days / 7);
+        }
+    </script>
+</body>
+</html>
