@@ -1,50 +1,76 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>My Codeforces Progress</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <h1>Codeforces Weekly Progress</h1>
-    <canvas id="myChart"></canvas>
+    <div id="table-container"></div>
 
     <script>
         const handle = "Mannu_1155";
 
         fetch(`https://codeforces.com/api/user.status?handle=${handle}`)
-        .then(res => res.json())
-        .then(data => {
-            const submissions = data.result;
-            const weekly = {};
-
-            submissions.forEach(sub => {
-                if (sub.verdict === "OK") {
+            .then(res => res.json())
+            .then(data => {
+                const submissions = data.result;
+                // Group submissions by week (Tuesday to Monday)
+                const weeks = {};
+                submissions.forEach(sub => {
                     const date = new Date(sub.creationTimeSeconds * 1000);
-                    const week = getWeek(date);
-                    weekly[week] = (weekly[week] || 0) + 1;
-                }
+                    const weekKey = getTuesdayWeekKey(date);
+                    if (!weeks[weekKey]) weeks[weekKey] = [];
+                    weeks[weekKey].push(sub);
+                });
+
+                // Sort weeks by date descending (latest first)
+                const sortedWeekKeys = Object.keys(weeks).sort((a, b) => new Date(b) - new Date(a));
+
+                let tableHtml = '<table border="1" style="border-collapse:collapse;width:100%">';
+                tableHtml += '<tr style="background:#eee"><th>Accepted</th><th>Date</th><th>Name/Title</th><th>Rating</th></tr>';
+
+                sortedWeekKeys.forEach(weekKey => {
+                    const weekSubs = weeks[weekKey];
+                    // Weekly summary
+                    const acceptedCount = weekSubs.filter(s => s.verdict === "OK").length;
+                    const totalCount = weekSubs.length;
+                    const weeklyscore = weekSubs
+                        .filter(s => s.verdict === "OK" && s.problem?.rating)
+                        .reduce((sum, s) => sum + s.problem.rating, 0) / 10;
+                    tableHtml += `<tr style="background:#cce5ff;font-weight:bold"><td colspan="4">Week of ${formatDate(new Date(weekKey))} (Accepted: ${acceptedCount}, Total: ${totalCount}, Weekly Score:${weeklyscore})</td></tr>`;
+                    // Sort submissions by date descending
+                    weekSubs.sort((a, b) => b.creationTimeSeconds - a.creationTimeSeconds);
+                    weekSubs.forEach(sub => {
+                        const accepted = sub.verdict === "OK" ? "Yes" : "No";
+                        const date = formatDate(new Date(sub.creationTimeSeconds * 1000));
+                        const name = sub.problem.name;
+                        const rating = sub.problem.rating || "-";
+                        tableHtml += `<tr><td>${accepted}</td><td>${date}</td><td>${name}</td><td>${rating}</td></tr>`;
+                    });
+                });
+                tableHtml += '</table>';
+                document.getElementById('table-container').innerHTML = tableHtml;
             });
 
-            const labels = Object.keys(weekly);
-            const values = Object.values(weekly);
+        // Get the Tuesday of the week for a given date
+        function getTuesdayWeekKey(date) {
+            const d = new Date(date);
+            // 0=Sun, 1=Mon, 2=Tue, ...
+            const day = d.getDay();
+            // Calculate how many days to subtract to get to Tuesday
+            const diff = (day >= 2) ? day - 2 : 6 + day;
+            d.setDate(d.getDate() - diff);
+            d.setHours(0, 0, 0, 0);
+            return d.toISOString().slice(0, 10); // YYYY-MM-DD
+        }
 
-            new Chart(document.getElementById("myChart"), {
-                type: "bar",
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Accepted per Week",
-                        data: values
-                    }]
-                }
-            });
-        });
-
-        function getWeek(date) {
-            const firstJan = new Date(date.getFullYear(), 0, 1);
-            const days = Math.floor((date - firstJan) / (24 * 60 * 60 * 1000));
-            return "Week " + Math.ceil(days / 7);
+        function formatDate(date) {
+            return date.toLocaleDateString('en-GB');
         }
     </script>
 </body>
+
 </html>
