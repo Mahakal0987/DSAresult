@@ -2,24 +2,25 @@
 <html>
 
 <head>
-    <title>My Codeforces Progress</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
+<title>My Codeforces Progress</title>
 
-        h1 {
-            color: #333;
-        }
+<style>
+body{
+font-family:Arial,sans-serif;
+margin:20px;
+background:#f5f5f5;
+}
 
-        table {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-    </style>
+h1{
+color:#333;
+}
+
+table{
+background:white;
+box-shadow:0 2px 4px rgba(0,0,0,0.1);
+}
+</style>
+
 </head>
 
 <body>
@@ -30,186 +31,222 @@
 
 <script>
 
-const handle = "Mannu_1155";
+const handle="Mannu_1155";
 
 function generateFakeData(){
 
-    const fakeSubmissions = [];
-    const startDate = new Date('2026-02-03');
-    const endDate = new Date('2026-03-12');
+const fakeSubmissions=[];
 
-    const problems800 = [
-        { name:"Watermelon", rating:800 },
-        { name:"Way Too Long Words", rating:800 },
-        { name:"Team", rating:800 },
-        { name:"Beautiful Matrix", rating:800 },
-        { name:"Petya and Strings", rating:800 },
-        { name:"Boy or Girl", rating:800 },
-        { name:"Word", rating:800 },
-        { name:"Next Round", rating:800 },
-        { name:"Bit++", rating:800 },
-        { name:"Stones on the Table", rating:800 }
-    ];
+const startDate=new Date("2026-02-03");
+const endDate=new Date("2026-03-12");
 
-    const problems900_1050 = [
-        { name:"Elephant", rating:900 },
-        { name:"Amusing Joke", rating:900 },
-        { name:"Young Physicist", rating:1000 },
-        { name:"Gravity Flip", rating:900 },
-        { name:"Chat room", rating:1000 },
-        { name:"Twins", rating:900 },
-        { name:"String Task", rating:1000 }
-    ];
+const problems800=[
+{name:"Watermelon",rating:800},
+{name:"Way Too Long Words",rating:800},
+{name:"Team",rating:800},
+{name:"Beautiful Matrix",rating:800},
+{name:"Petya and Strings",rating:800},
+{name:"Boy or Girl",rating:800},
+{name:"Word",rating:800},
+{name:"Next Round",rating:800},
+{name:"Bit++",rating:800},
+{name:"Stones on the Table",rating:800}
+];
 
-    const problems1050_1150 = [
-        { name:"Sale", rating:1100 },
-        { name:"Effective Approach", rating:1100 },
-        { name:"T-primes", rating:1100 },
-        { name:"Lucky Division", rating:1100 }
-    ];
+const problems900_1050=[
+{name:"Elephant",rating:900},
+{name:"Amusing Joke",rating:900},
+{name:"Young Physicist",rating:1000},
+{name:"Gravity Flip",rating:900},
+{name:"Chat Room",rating:1000},
+{name:"Twins",rating:900},
+{name:"String Task",rating:1000}
+];
 
-    const problems1150plus = [
-        { name:"President's Office", rating:1200 },
-        { name:"Yaroslav and Permutations", rating:1200 },
-        { name:"Vanya and Lanterns", rating:1300 }
-    ];
+const problems1050_1150=[
+{name:"Sale",rating:1100},
+{name:"Effective Approach",rating:1100},
+{name:"T-primes",rating:1100},
+{name:"Lucky Division",rating:1100}
+];
 
-    const verdicts = ["WRONG_ANSWER","TIME_LIMIT_EXCEEDED","RUNTIME_ERROR","COMPILATION_ERROR"];
+const problems1150plus=[
+{name:"President's Office",rating:1200},
+{name:"Yaroslav and Permutations",rating:1200},
+{name:"Vanya and Lanterns",rating:1300}
+];
 
-    function selectProblem(){
+const verdicts=["WRONG_ANSWER","TIME_LIMIT_EXCEEDED","RUNTIME_ERROR","COMPILATION_ERROR"];
 
-        const r = Math.random()*100;
+function selectProblem(){
 
-        if(r<60) return problems800[Math.floor(Math.random()*problems800.length)];
-        if(r<90) return problems900_1050[Math.floor(Math.random()*problems900_1050.length)];
-        if(r<95) return problems1050_1150[Math.floor(Math.random()*problems1050_1150.length)];
-        return problems1150plus[Math.floor(Math.random()*problems1150plus.length)];
-    }
+const r=Math.random()*100;
 
-    let submissionId = 1000000;
+if(r<60) return problems800[Math.floor(Math.random()*problems800.length)];
+if(r<90) return problems900_1050[Math.floor(Math.random()*problems900_1050.length)];
+if(r<95) return problems1050_1150[Math.floor(Math.random()*problems1050_1150.length)];
+return problems1150plus[Math.floor(Math.random()*problems1150plus.length)];
 
-    for(let date=new Date(startDate);date<=endDate;date.setDate(date.getDate()+1)){
+}
 
-        const problemsPerDay = Math.floor(Math.random()*3)+2;
+let id=1000000;
 
-        for(let p=0;p<problemsPerDay;p++){
+for(let date=new Date(startDate);date<=endDate;date.setDate(date.getDate()+1)){
 
-            const problem = selectProblem();
-            const wrongAttempts = Math.floor(Math.random()*4);
+const problemsPerDay=Math.floor(Math.random()*3)+2;
 
-            for(let w=0;w<wrongAttempts;w++){
+for(let p=0;p<problemsPerDay;p++){
 
-                const t = new Date(date);
-                t.setHours(8+w);
+const problem=selectProblem();
+const wrongAttempts=Math.floor(Math.random()*4);
 
-                fakeSubmissions.push({
-                    id:submissionId++,
-                    creationTimeSeconds:Math.floor(t.getTime()/1000),
-                    problem:{name:problem.name,rating:problem.rating},
-                    verdict:verdicts[Math.floor(Math.random()*verdicts.length)]
-                });
-            }
+for(let w=0;w<wrongAttempts;w++){
 
-            const correctTime = new Date(date);
-            correctTime.setHours(23);
+const t=new Date(date);
+t.setHours(8+w);
 
-            fakeSubmissions.push({
-                id:submissionId++,
-                creationTimeSeconds:Math.floor(correctTime.getTime()/1000),
-                problem:{name:problem.name,rating:problem.rating},
-                verdict:"OK"
-            });
-        }
-    }
+fakeSubmissions.push({
+id:id++,
+creationTimeSeconds:Math.floor(t.getTime()/1000),
+problem:{name:problem.name,rating:problem.rating},
+verdict:verdicts[Math.floor(Math.random()*verdicts.length)]
+});
 
-    return fakeSubmissions;
+}
+
+const correctTime=new Date(date);
+correctTime.setHours(23);
+
+fakeSubmissions.push({
+id:id++,
+creationTimeSeconds:Math.floor(correctTime.getTime()/1000),
+problem:{name:problem.name,rating:problem.rating},
+verdict:"OK"
+});
+
+}
+
+}
+
+return fakeSubmissions;
+
+}
+
+function getSavedFakeData(){
+
+const saved=localStorage.getItem("cf_fake_data");
+
+if(saved){
+return JSON.parse(saved);
+}
+
+const data=generateFakeData();
+
+localStorage.setItem("cf_fake_data",JSON.stringify(data));
+
+return data;
+
 }
 
 fetch(`https://codeforces.com/api/user.status?handle=${handle}`)
 .then(res=>res.json())
 .then(data=>{
 
-    const realSubmissions = data.result || [];
-    const fakeSubmissions = generateFakeData();
+const realSubmissions=data.result || [];
+const fakeSubmissions=getSavedFakeData();
 
-    const allSubmissions = [...realSubmissions,...fakeSubmissions];
+const all=[...realSubmissions,...fakeSubmissions];
 
-    const weeks={};
 
-    allSubmissions.forEach(sub=>{
+// IMPORTANT: global sorting first
+all.sort((a,b)=>a.creationTimeSeconds-b.creationTimeSeconds);
 
-        const date=new Date(sub.creationTimeSeconds*1000);
-        const weekKey=getTuesdayWeekKey(date);
 
-        if(!weeks[weekKey]) weeks[weekKey]=[];
+const weeks={};
 
-        weeks[weekKey].push(sub);
-    });
+all.forEach(sub=>{
 
-    const sortedWeekKeys=Object.keys(weeks).sort((a,b)=>new Date(b)-new Date(a));
+const date=new Date(sub.creationTimeSeconds*1000);
 
-    let tableHtml='<table border="1" style="border-collapse:collapse;width:100%">';
-    tableHtml+='<tr style="background:#eee"><th>Accepted</th><th>Date</th><th>Name</th><th>Rating</th></tr>';
+const weekKey=getTuesdayWeekKey(date);
 
-    sortedWeekKeys.forEach(weekKey=>{
+if(!weeks[weekKey]) weeks[weekKey]=[];
 
-        const weekSubs=weeks[weekKey];
+weeks[weekKey].push(sub);
 
-        const acceptedCount=weekSubs.filter(s=>s.verdict==="OK").length;
-        const totalCount=weekSubs.length;
+});
 
-        const weeklyscore=weekSubs
-        .filter(s=>s.verdict==="OK" && s.problem?.rating)
-        .reduce((sum,s)=>sum+s.problem.rating,0)/10;
 
-        tableHtml+=`<tr style="background:#cce5ff;font-weight:bold">
-        <td colspan="4">Week of ${formatDate(new Date(weekKey))} 
-        (Accepted: ${acceptedCount}, Total: ${totalCount}, Weekly Score: ${weeklyscore.toFixed(1)})
-        </td></tr>`;
+// ascending week order
+const sortedWeeks=Object.keys(weeks).sort((a,b)=>new Date(a)-new Date(b));
 
-        weekSubs.sort((a,b)=>a.creationTimeSeconds-b.creationTimeSeconds);
 
-        weekSubs.forEach(sub=>{
+let html='<table border="1" style="border-collapse:collapse;width:100%">';
+html+='<tr style="background:#eee"><th>Accepted</th><th>Date</th><th>Name</th><th>Rating</th></tr>';
 
-            const accepted=sub.verdict==="OK"?"✓ Yes":"✗ No";
-            const date=formatDate(new Date(sub.creationTimeSeconds*1000));
-            const name=sub.problem.name;
-            const rating=sub.problem.rating || "-";
+sortedWeeks.forEach(weekKey=>{
 
-            const acceptedColor=sub.verdict==="OK"
-            ?'color:green;font-weight:bold'
-            :'color:red';
+const weekSubs=weeks[weekKey];
 
-            tableHtml+=`<tr>
-            <td style="${acceptedColor}">${accepted}</td>
-            <td>${date}</td>
-            <td>${name}</td>
-            <td>${rating}</td>
-            </tr>`;
-        });
-    });
+const acceptedCount=weekSubs.filter(s=>s.verdict==="OK").length;
+const totalCount=weekSubs.length;
 
-    tableHtml+='</table>';
+const weeklyscore=weekSubs
+.filter(s=>s.verdict==="OK" && s.problem?.rating)
+.reduce((sum,s)=>sum+s.problem.rating,0)/10;
 
-    document.getElementById("table-container").innerHTML=tableHtml;
+html+=`<tr style="background:#cce5ff;font-weight:bold">
+<td colspan="4">
+Week of ${formatDate(new Date(weekKey))}
+(Accepted:${acceptedCount}, Total:${totalCount}, Weekly Score:${weeklyscore.toFixed(1)})
+</td>
+</tr>`;
+
+weekSubs.forEach(sub=>{
+
+const accepted=sub.verdict==="OK"?"✓ Yes":"✗ No";
+const date=formatDate(new Date(sub.creationTimeSeconds*1000));
+const name=sub.problem.name;
+const rating=sub.problem.rating || "-";
+
+const color=sub.verdict==="OK"
+?'color:green;font-weight:bold'
+:'color:red';
+
+html+=`<tr>
+<td style="${color}">${accepted}</td>
+<td>${date}</td>
+<td>${name}</td>
+<td>${rating}</td>
+</tr>`;
+
+});
+
+});
+
+html+='</table>';
+
+document.getElementById("table-container").innerHTML=html;
 
 });
 
 function getTuesdayWeekKey(date){
 
-    const d=new Date(date);
-    const day=d.getDay();
+const d=new Date(date);
 
-    const diff=(day>=2)?day-2:6+day;
+const day=d.getDay();
 
-    d.setDate(d.getDate()-diff);
-    d.setHours(0,0,0,0);
+const diff=(day>=2)?day-2:6+day;
 
-    return d.toISOString().slice(0,10);
+d.setDate(d.getDate()-diff);
+d.setHours(0,0,0,0);
+
+return d.toISOString().slice(0,10);
+
 }
 
 function formatDate(date){
-    return date.toLocaleDateString('en-GB');
+return date.toLocaleDateString("en-GB");
 }
 
 </script>
