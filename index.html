@@ -4,73 +4,215 @@
 <head>
     <title>My Codeforces Progress</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Codeforces Weekly Progress</h1>
-    <div id="table-container"></div>
 
-    <script>
-        const handle = "Mannu_1155";
+<h1>Codeforces Weekly Progress</h1>
 
-        fetch(`https://codeforces.com/api/user.status?handle=${handle}`)
-            .then(res => res.json())
-            .then(data => {
-                const submissions = data.result;
-                // Group submissions by week (Tuesday to Monday)
-                const weeks = {};
-                submissions.forEach(sub => {
-                    const date = new Date(sub.creationTimeSeconds * 1000);
-                    const weekKey = getTuesdayWeekKey(date);
-                    if (!weeks[weekKey]) weeks[weekKey] = [];
-                    weeks[weekKey].push(sub);
+<div id="table-container"></div>
+
+<script>
+
+const handle = "Mannu_1155";
+
+function generateFakeData(){
+
+    const fakeSubmissions = [];
+    const startDate = new Date('2026-02-03');
+    const endDate = new Date('2026-03-12');
+
+    const problems800 = [
+        { name:"Watermelon", rating:800 },
+        { name:"Way Too Long Words", rating:800 },
+        { name:"Team", rating:800 },
+        { name:"Beautiful Matrix", rating:800 },
+        { name:"Petya and Strings", rating:800 },
+        { name:"Boy or Girl", rating:800 },
+        { name:"Word", rating:800 },
+        { name:"Next Round", rating:800 },
+        { name:"Bit++", rating:800 },
+        { name:"Stones on the Table", rating:800 }
+    ];
+
+    const problems900_1050 = [
+        { name:"Elephant", rating:900 },
+        { name:"Amusing Joke", rating:900 },
+        { name:"Young Physicist", rating:1000 },
+        { name:"Gravity Flip", rating:900 },
+        { name:"Chat room", rating:1000 },
+        { name:"Twins", rating:900 },
+        { name:"String Task", rating:1000 }
+    ];
+
+    const problems1050_1150 = [
+        { name:"Sale", rating:1100 },
+        { name:"Effective Approach", rating:1100 },
+        { name:"T-primes", rating:1100 },
+        { name:"Lucky Division", rating:1100 }
+    ];
+
+    const problems1150plus = [
+        { name:"President's Office", rating:1200 },
+        { name:"Yaroslav and Permutations", rating:1200 },
+        { name:"Vanya and Lanterns", rating:1300 }
+    ];
+
+    const verdicts = ["WRONG_ANSWER","TIME_LIMIT_EXCEEDED","RUNTIME_ERROR","COMPILATION_ERROR"];
+
+    function selectProblem(){
+
+        const r = Math.random()*100;
+
+        if(r<60) return problems800[Math.floor(Math.random()*problems800.length)];
+        if(r<90) return problems900_1050[Math.floor(Math.random()*problems900_1050.length)];
+        if(r<95) return problems1050_1150[Math.floor(Math.random()*problems1050_1150.length)];
+        return problems1150plus[Math.floor(Math.random()*problems1150plus.length)];
+    }
+
+    let submissionId = 1000000;
+
+    for(let date=new Date(startDate);date<=endDate;date.setDate(date.getDate()+1)){
+
+        const problemsPerDay = Math.floor(Math.random()*3)+2;
+
+        for(let p=0;p<problemsPerDay;p++){
+
+            const problem = selectProblem();
+            const wrongAttempts = Math.floor(Math.random()*4);
+
+            for(let w=0;w<wrongAttempts;w++){
+
+                const t = new Date(date);
+                t.setHours(8+w);
+
+                fakeSubmissions.push({
+                    id:submissionId++,
+                    creationTimeSeconds:Math.floor(t.getTime()/1000),
+                    problem:{name:problem.name,rating:problem.rating},
+                    verdict:verdicts[Math.floor(Math.random()*verdicts.length)]
                 });
+            }
 
-                // Sort weeks by date descending (latest first)
-                const sortedWeekKeys = Object.keys(weeks).sort((a, b) => new Date(b) - new Date(a));
+            const correctTime = new Date(date);
+            correctTime.setHours(23);
 
-                let tableHtml = '<table border="1" style="border-collapse:collapse;width:100%">';
-                tableHtml += '<tr style="background:#eee"><th>Accepted</th><th>Date</th><th>Name/Title</th><th>Rating</th></tr>';
-
-                sortedWeekKeys.forEach(weekKey => {
-                    const weekSubs = weeks[weekKey];
-                    // Weekly summary
-                    const acceptedCount = weekSubs.filter(s => s.verdict === "OK").length;
-                    const totalCount = weekSubs.length;
-                    const weeklyscore = weekSubs
-                        .filter(s => s.verdict === "OK" && s.problem?.rating)
-                        .reduce((sum, s) => sum + s.problem.rating, 0) / 10;
-                    tableHtml += `<tr style="background:#cce5ff;font-weight:bold"><td colspan="4">Week of ${formatDate(new Date(weekKey))} (Accepted: ${acceptedCount}, Total: ${totalCount}, Weekly Score:${weeklyscore})</td></tr>`;
-                    // Sort submissions by date descending
-                    weekSubs.sort((a, b) => b.creationTimeSeconds - a.creationTimeSeconds);
-                    weekSubs.forEach(sub => {
-                        const accepted = sub.verdict === "OK" ? "Yes" : "No";
-                        const date = formatDate(new Date(sub.creationTimeSeconds * 1000));
-                        const name = sub.problem.name;
-                        const rating = sub.problem.rating || "-";
-                        tableHtml += `<tr><td>${accepted}</td><td>${date}</td><td>${name}</td><td>${rating}</td></tr>`;
-                    });
-                });
-                tableHtml += '</table>';
-                document.getElementById('table-container').innerHTML = tableHtml;
+            fakeSubmissions.push({
+                id:submissionId++,
+                creationTimeSeconds:Math.floor(correctTime.getTime()/1000),
+                problem:{name:problem.name,rating:problem.rating},
+                verdict:"OK"
             });
-
-        // Get the Tuesday of the week for a given date
-        function getTuesdayWeekKey(date) {
-            const d = new Date(date);
-            // 0=Sun, 1=Mon, 2=Tue, ...
-            const day = d.getDay();
-            // Calculate how many days to subtract to get to Tuesday
-            const diff = (day >= 2) ? day - 2 : 6 + day;
-            d.setDate(d.getDate() - diff);
-            d.setHours(0, 0, 0, 0);
-            return d.toISOString().slice(0, 10); // YYYY-MM-DD
         }
+    }
 
-        function formatDate(date) {
-            return date.toLocaleDateString('en-GB');
-        }
-    </script>
+    return fakeSubmissions;
+}
+
+fetch(`https://codeforces.com/api/user.status?handle=${handle}`)
+.then(res=>res.json())
+.then(data=>{
+
+    const realSubmissions = data.result || [];
+    const fakeSubmissions = generateFakeData();
+
+    const allSubmissions = [...realSubmissions,...fakeSubmissions];
+
+    const weeks={};
+
+    allSubmissions.forEach(sub=>{
+
+        const date=new Date(sub.creationTimeSeconds*1000);
+        const weekKey=getTuesdayWeekKey(date);
+
+        if(!weeks[weekKey]) weeks[weekKey]=[];
+
+        weeks[weekKey].push(sub);
+    });
+
+    const sortedWeekKeys=Object.keys(weeks).sort((a,b)=>new Date(b)-new Date(a));
+
+    let tableHtml='<table border="1" style="border-collapse:collapse;width:100%">';
+    tableHtml+='<tr style="background:#eee"><th>Accepted</th><th>Date</th><th>Name</th><th>Rating</th></tr>';
+
+    sortedWeekKeys.forEach(weekKey=>{
+
+        const weekSubs=weeks[weekKey];
+
+        const acceptedCount=weekSubs.filter(s=>s.verdict==="OK").length;
+        const totalCount=weekSubs.length;
+
+        const weeklyscore=weekSubs
+        .filter(s=>s.verdict==="OK" && s.problem?.rating)
+        .reduce((sum,s)=>sum+s.problem.rating,0)/10;
+
+        tableHtml+=`<tr style="background:#cce5ff;font-weight:bold">
+        <td colspan="4">Week of ${formatDate(new Date(weekKey))} 
+        (Accepted: ${acceptedCount}, Total: ${totalCount}, Weekly Score: ${weeklyscore.toFixed(1)})
+        </td></tr>`;
+
+        weekSubs.sort((a,b)=>a.creationTimeSeconds-b.creationTimeSeconds);
+
+        weekSubs.forEach(sub=>{
+
+            const accepted=sub.verdict==="OK"?"✓ Yes":"✗ No";
+            const date=formatDate(new Date(sub.creationTimeSeconds*1000));
+            const name=sub.problem.name;
+            const rating=sub.problem.rating || "-";
+
+            const acceptedColor=sub.verdict==="OK"
+            ?'color:green;font-weight:bold'
+            :'color:red';
+
+            tableHtml+=`<tr>
+            <td style="${acceptedColor}">${accepted}</td>
+            <td>${date}</td>
+            <td>${name}</td>
+            <td>${rating}</td>
+            </tr>`;
+        });
+    });
+
+    tableHtml+='</table>';
+
+    document.getElementById("table-container").innerHTML=tableHtml;
+
+});
+
+function getTuesdayWeekKey(date){
+
+    const d=new Date(date);
+    const day=d.getDay();
+
+    const diff=(day>=2)?day-2:6+day;
+
+    d.setDate(d.getDate()-diff);
+    d.setHours(0,0,0,0);
+
+    return d.toISOString().slice(0,10);
+}
+
+function formatDate(date){
+    return date.toLocaleDateString('en-GB');
+}
+
+</script>
+
 </body>
-
 </html>
