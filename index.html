@@ -155,7 +155,11 @@ fetch(`https://codeforces.com/api/user.status?handle=${handle}`)
 const realSubmissions=data.result || [];
 const fakeSubmissions=getSavedFakeData();
 
-const all=[...realSubmissions,...fakeSubmissions];
+var all=[...realSubmissions,...fakeSubmissions];
+const asdf=all
+all=[]
+asdf.forEach(sub => {if(sub.creationTimeSeconds * 1000 < 1773547286230){all.push(sub)}});
+console.log(all);
 
 
 // IMPORTANT: global sorting first
