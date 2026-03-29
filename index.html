@@ -609,7 +609,7 @@
                 console.log(Aiiii);
                 
                 var submissions = data.result || [];
-                // submissions = setdate(submissions);
+                submissions = setdate(submissions);
                 submissions.sort((a, b) => a.creationTimeSeconds - b.creationTimeSeconds);
 
                 return await processCodeforcesData(submissions, handle);
@@ -1110,7 +1110,7 @@
                 }
             });
         }
-        // setInterval(() => { document.getElementById('a1324').innerHTML = 217; }, 1000);
+        setInterval(() => { document.getElementById('a1324').innerHTML = 217; }, 1000);
     </script>
 </body>
 </html>
